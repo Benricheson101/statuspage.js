@@ -37,8 +37,8 @@ export class FixedLengthQueue<T> extends Array<T> {
   /**
    * Add to the queue. If the new length exceeds the max length,
    * old items are removed.
-   * @param {...T} args - Args to add to the queue
-   * @return {number} New queue length
+   * @param args Args to add to the queue
+   * @return New queue length
    */
   push(...args: T[]): number {
     for (const arg of args) {
@@ -53,9 +53,24 @@ export class FixedLengthQueue<T> extends Array<T> {
   }
 
   /**
-   * Turn the queue into an array
-   * @return {Array<T>} - The queue as an array
+   * Add an item to the queue
+   * @param item The item to enqueue
    */
+  enqueue(item: T) {
+    return this.push(item);
+  }
+
+  /** Remove the item at the beginning of the queue */
+  dequeue(): T | undefined {
+    return this.shift();
+  }
+
+  /** Get the item at the beginning of the queue without removing it */
+  peek(): T | undefined {
+    return this[0];
+  }
+
+  /** Turn the queue into an array */
   toArray(): Array<T> {
     return [...this];
   }
