@@ -1,4 +1,10 @@
+export type ValueOf<T> = T[keyof T];
+
+//
+// Base lib
+//
 export type Indicator = 'none' | 'minor' | 'major' | 'critical';
+
 export type IncidentStatus =
   | 'investigating'
   | 'identified'
@@ -70,9 +76,9 @@ export interface ScheduledMaintenance extends Incident {
 export interface Summary {
   page: Page;
   status: PageStatusInfo;
-  components: Component[];
-  incidents: Incident[];
-  scheduled_maintenances: ScheduledMaintenance[];
+  components?: Component[];
+  incidents?: Incident[];
+  scheduled_maintenances?: ScheduledMaintenance[];
 }
 
 export interface PageStatus {
@@ -109,3 +115,7 @@ export interface UpcomingScheduledMaintenances {
   page: Page;
   scheduled_maintenances: ScheduledMaintenance[];
 }
+
+//
+// Auto check thingy
+//
