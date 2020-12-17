@@ -1,6 +1,6 @@
 {
   "name": "statuspage.js",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
   "license": "MIT",
