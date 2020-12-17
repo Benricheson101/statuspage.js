@@ -1,9 +1,14 @@
 {
   "name": "statuspage.js",
+  "description": "An implementation of statuspage.io's API for Node.js",
   "version": "1.0.8",
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Benricheson101/statuspage.js"
+  },
   "devDependencies": {
     "@types/node": "^14.14.13",
     "gts": "^3.0.3",
