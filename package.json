@@ -1,5 +1,5 @@
 {
-  "name": "statuspageio.js",
+  "name": "statuspage.js",
   "version": "1.0.0",
   "main": "build/src/index.js",
   "license": "MIT",
