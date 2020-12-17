@@ -1,8 +1,8 @@
 {
   "name": "statuspage.js",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "build/src/index.js",
-  "types": "index.d.ts",
+  "types": "build/src/index.d.ts",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^14.14.13",
