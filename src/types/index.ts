@@ -3,8 +3,11 @@ export type ValueOf<T> = T[keyof T];
 //
 // Base lib
 //
+
+/** Component status indicators */
 export type Indicator = 'none' | 'minor' | 'major' | 'critical';
 
+/** Incident statuses */
 export type IncidentStatus =
   | 'investigating'
   | 'identified'
@@ -12,12 +15,18 @@ export type IncidentStatus =
   | 'resolved'
   | 'postmortem';
 
+/** Component statuses */
 export type ComponentStatus =
   | 'operational'
   | 'degraded_performance'
   | 'partial_outage'
   | 'major_outage';
 
+/**
+ * Basic info about the statuspage.
+ *
+ * All responses include this.
+ */
 export interface Page {
   id: string;
   name: string;
@@ -73,49 +82,51 @@ export interface ScheduledMaintenance extends Incident {
 // -- api endpoint responses --
 //
 
-export interface Summary {
+/** Base response type that all other responses are derived from */
+export interface Response {
   page: Page;
+}
+
+export interface Summary extends Response {
   status: PageStatusInfo;
   components?: Component[];
   incidents?: Incident[];
   scheduled_maintenances?: ScheduledMaintenance[];
 }
 
-export interface PageStatus {
-  page: Page;
+export interface PageStatus extends Response {
   status: PageStatusInfo;
 }
 
-export interface PageComponents {
-  page: Page;
+export interface PageComponents extends Response {
   components: Component[];
 }
 
-export interface AllIncidents {
-  page: Page;
+export interface AllIncidents extends Response {
   incidents: Incident[];
 }
 
-export interface UnresolvedIncidents {
-  page: Page;
+export interface UnresolvedIncidents extends Response {
   incidents: Incident[];
 }
 
-export interface AllScheduledMaintenances {
-  page: Page;
+export interface AllScheduledMaintenances extends Response {
   scheduled_maintenances: ScheduledMaintenance[];
 }
 
-export interface ActiveScheduledMaintenances {
-  page: Page;
+export interface ActiveScheduledMaintenances extends Response {
   scheduled_maintenances: ScheduledMaintenance[];
 }
 
-export interface UpcomingScheduledMaintenances {
-  page: Page;
+export interface UpcomingScheduledMaintenances extends Response {
   scheduled_maintenances: ScheduledMaintenance[];
 }
 
 //
-// Auto check thingy
+// StatuspageUpdates
 //
+
+export interface PollingState {
+  state: 'started' | 'running' | 'stopped';
+  time: Date;
+}

@@ -6,6 +6,7 @@
  *
  * Once it reaches capacity, elements at the front of the
  * array are dropped to make room for new elements.
+ * @noInheritDoc
  */
 export class FixedLengthQueue<T> extends Array<T> {
   constructor(private maxLength: number) {

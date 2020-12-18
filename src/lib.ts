@@ -10,12 +10,24 @@ import {
   UpcomingScheduledMaintenances,
 } from './types';
 
-/** The main statuspage.io API library
+/**
+ * The main statuspage.io API library
  *
  * This class contains methods for fetching data from
  * all documented statuspage.io endpoints.
+ *
+ * ```ts
+ * const s = new Statuspage('abc123');
+ *
+ * const summary = await s.summary();
+ * const status = await s.status();
+ * ```
  */
 export class Statuspage {
+  /**
+   * configured axios instance
+   * @internal
+   */
   private axios: AxiosInstance;
 
   constructor(public id: string) {
@@ -37,8 +49,8 @@ export class Statuspage {
 
   /**
    * Get a summary of the status page, including a status indicator
-   * component statuses, inresolved incidents and any upcoming or
-   * in-progress sceduled maintenances.
+   * component statuses, unresolved incidents and any upcoming or
+   * in-progress scheduled maintenances.
    * @return API response
    */
   async summary(): Promise<Summary> {
@@ -47,7 +59,7 @@ export class Statuspage {
 
   /**
    * Get the status rollup for the whole page. This endpoint includes
-   * an indicator - on of *none, minor, major or critical* as well as
+   * an indicator - on of *none*, *minor*, *major* or *critical* as well as
    * a human description of the blended component status.
    * @return API response
    */
@@ -56,8 +68,8 @@ export class Statuspage {
   }
 
   /**
-   * Get the components for the page. Each component is listed along its
-   * status - one of *operational, degraded_performance, partial_outage or major_outage*
+   * Get the components for the page. Each component is listed along with its
+   * status - one of *operational, degraded_performance, partial_outage* or *major_outage*
    * @return API response
    */
   async components(): Promise<PageComponents> {
@@ -65,7 +77,7 @@ export class Statuspage {
   }
 
   /**
-   * Geta list of the 50 most recent incidents. This includes all unresolved
+   * Get a list of the 50 most recent incidents. This includes all unresolved
    * incidents, as well as those in the *Resolved* and *Postmortem* state.
    * @return API response
    */
@@ -75,7 +87,7 @@ export class Statuspage {
 
   /**
    * Get a list of any unresolved incidents. This endpoint will only return
-   * incidents in the *investigating, identified or monitoring* state.
+   * incidents in the *investigating*, *identified* or *monitoring* state.
    * @return API response
    */
   async unresolvedIncidents(): Promise<UnresolvedIncidents> {
@@ -95,7 +107,7 @@ export class Statuspage {
 
   /**
    * Get a list of any active maintenances. This endpoint will only return
-   * scheduled maintenances in the *in progress or verifying* state.
+   * scheduled maintenances in the *in progress* or *verifying* state.
    * @return API response
    */
   async activeScheduledMaintenances(): Promise<ActiveScheduledMaintenances> {
@@ -106,7 +118,7 @@ export class Statuspage {
 
   /**
    * Get a list of any upcoming maintenances. This endpoint will only return
-   * schedule maintenances in the *scheduled* state.
+   * scheduled maintenances in the *scheduled* state.
    * @return API response
    */
   async upcomingScheduledMaintenances(): Promise<UpcomingScheduledMaintenances> {
@@ -117,6 +129,7 @@ export class Statuspage {
 
   /**
    * Make a request to a statuspage.io endpoint.
+   * @internal
    * @return Parsed JSON response
    */
   private async _makeRequest<T>(endpoint: string): Promise<T> {

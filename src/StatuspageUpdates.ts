@@ -6,7 +6,9 @@ import {AllIncidents, IncidentUpdates} from './types';
 // TODO: give emitted values a type
 // TODO: make `INCIDENT_UPDATE` and `INCIDENT_CREATE` events
 
-/** Emit an event when the status page is updated */
+/**
+ * Emit an event when the status page is updated
+ */
 export class StatuspageUpdates extends EventEmitter {
   /** Handles all of the API requests that will be made */
   private s: Statuspage;
@@ -86,13 +88,13 @@ export class StatuspageUpdates extends EventEmitter {
 
   /** Start checking for updates */
   async start(): Promise<void> {
-    super.emit('START', {time: new Date()});
+    super.emit('START', {time: new Date(), state: 'started'});
 
     const run = async () => {
       await this.fetch();
       this.checkUpdate();
 
-      super.emit('RUN', {time: new Date()});
+      super.emit('RUN', {time: new Date(), state: 'running'});
     };
 
     await run();
@@ -101,13 +103,13 @@ export class StatuspageUpdates extends EventEmitter {
 
   /**
    * Stop automatically checking for updates.
-   * Calling `StatuspageAutoCheck#run` again will restart the timer.
+   * Calling `StatuspageUpdates#start` again will restart the timer.
    * @return Stop success
    */
   stop(): boolean {
     if (this.timer) {
       clearInterval(this.timer);
-      super.emit('STOPPED', {time: new Date()});
+      super.emit('STOP', {time: new Date(), state: 'stopped'});
 
       return true;
     }
