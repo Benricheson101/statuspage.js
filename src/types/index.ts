@@ -40,13 +40,20 @@ export interface PageStatusInfo {
 }
 
 export interface Component {
-  created_at: Date;
-  description: string | null;
   id: string;
-  page_id: string;
-  position: number;
-  status: string;
+  name: string;
+  status: ComponentStatus;
+  created_at: Date;
   updated_at: Date;
+  position: number;
+  description: string | null;
+  showcase: boolean;
+  start_date: Date | null;
+  group_id: string | null;
+  page_id: string;
+  group: boolean;
+  only_show_if_degraded: boolean;
+  components?: string[];
 }
 
 export interface Incident {
