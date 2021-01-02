@@ -3,7 +3,6 @@
   "description": "An implementation of statuspage.io's API for Node.js",
   "version": "1.0.12",
   "main": "build/src/index.js",
-  "types": "build/src/index.d.ts",
   "license": "MIT",
   "repository": {
     "type": "git",

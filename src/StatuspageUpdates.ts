@@ -1,10 +1,8 @@
 import {EventEmitter} from 'events';
-import {Statuspage} from './lib';
+import {AllIncidents, Incident, IncidentUpdates, Statuspage} from './lib';
 import {FixedLengthQueue} from './FixedLengthQueue';
-import {AllIncidents, IncidentUpdates} from './types';
 
-// TODO: give emitted values a type
-// TODO: make `INCIDENT_UPDATE` and `INCIDENT_CREATE` events
+// TODO: make `incident_update` and `incident_create` separate events
 
 /**
  * Emit an event when the status page is updated
@@ -49,7 +47,7 @@ export class StatuspageUpdates extends EventEmitter {
   }
 
   /**
-   * Check for updates. Emits am `INCIDENT_UPDATE` event if
+   * Check for updates. Emits an `incident_update` event if
    * the status page has been updated.
    * @return returns true if the status page has been updated.
    */
@@ -77,7 +75,7 @@ export class StatuspageUpdates extends EventEmitter {
       this.emitted.every(i => i.id !== rID) &&
       rUpdatedAt > pUpdatedAt
     ) {
-      super.emit('INCIDENT_UPDATE', this.curr);
+      super.emit('incident_update', this.curr.incidents[0]);
       this.emitted.push(this.curr.incidents[0].incident_updates[0]);
 
       return true;
@@ -88,13 +86,19 @@ export class StatuspageUpdates extends EventEmitter {
 
   /** Start checking for updates */
   async start(): Promise<void> {
-    super.emit('START', {time: new Date(), state: 'started'});
+    super.emit('start', {
+      time: new Date(),
+      state: StatuspageUpdatesState.Started,
+    });
 
     const run = async () => {
       await this.fetch();
       this.checkUpdate();
 
-      super.emit('RUN', {time: new Date(), state: 'running'});
+      super.emit('run', {
+        time: new Date(),
+        state: StatuspageUpdatesState.Running,
+      });
     };
 
     await run();
@@ -109,7 +113,10 @@ export class StatuspageUpdates extends EventEmitter {
   stop(): boolean {
     if (this.timer) {
       clearInterval(this.timer);
-      super.emit('STOP', {time: new Date(), state: 'stopped'});
+      super.emit('stop', {
+        time: new Date(),
+        state: StatuspageUpdatesState.Stopped,
+      });
 
       return true;
     }
@@ -127,4 +134,46 @@ export class StatuspageUpdates extends EventEmitter {
 
     return this.prev;
   }
+}
+
+export declare interface StatuspageUpdates {
+  emit(event: 'start', status: PollingStatus): boolean;
+  emit(event: 'run', status: PollingStatus): boolean;
+  emit(event: 'stop', status: PollingStatus): boolean;
+  emit(event: 'incident_update', status: PollingStatus): boolean;
+
+  /** emits when the program begins checking for updates */
+  on(event: 'start', listener: (status: PollingStatus) => void): this;
+
+  /** emits each time the status page is checked for updates */
+  on(event: 'run', listener: (status: PollingStatus) => void): this;
+
+  /** emits once automatic update checks stop */
+  on(event: 'stop', listener: (status: PollingStatus) => void): this;
+
+  /** emits when an incident receives an update. */
+  on(event: 'incident_update', listener: (incident: Incident) => void): this;
+
+  /** emits when the program begins checking for updates */
+  once(event: 'start', listener: (status: PollingStatus) => void): this;
+
+  /** emits each time the status page is checked for updates */
+  once(event: 'run', listener: (status: PollingStatus) => void): this;
+
+  /** emits once automatic update checks stop */
+  once(event: 'stop', listener: (status: PollingStatus) => void): this;
+
+  /** emits when an incident receives an update. */
+  once(event: 'incident_update', listener: (incident: Incident) => void): this;
+}
+
+export enum StatuspageUpdatesState {
+  Started = 'started',
+  Running = 'running',
+  Stopped = 'stopped',
+}
+
+export interface PollingStatus {
+  state: StatuspageUpdatesState;
+  time: Date;
 }
