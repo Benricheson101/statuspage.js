@@ -5,7 +5,6 @@
     "outDir": "build",
     "sourceMap": false,
     "typeRoots": [
-      "./src/types",
       "./node_modules/@types"
     ]
   },
