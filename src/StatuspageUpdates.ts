@@ -1,6 +1,6 @@
 import {EventEmitter} from 'events';
 import {AllIncidents, Incident, IncidentUpdates, Statuspage} from './lib';
-import {FixedLengthQueue} from './FixedLengthQueue';
+import {Cache} from './Cache';
 
 // TODO: make `incident_update` and `incident_create` separate events
 
@@ -14,26 +14,18 @@ export class StatuspageUpdates extends EventEmitter {
   /**
    * A representation of the last 50 *updates* that have been emitted.
    *
-   * Doesn't have a definite length of 50, but a max length of 50. It
-   * has the structure and methods of a fifo queue, but once it reaches
-   * the max length, any additions will push the first inserted element
-   * out of the queue.
-   *
    * Updates are saved here after being emitted. It is used to
    * prevent updates from being emitted multiple times because
    * sometimes that happens for some reason :thonk:
-   *
-   * The only reason it is a FixedLengthQueue instead of an array
-   * is because I don't care about entries after a certain point.
-   * Most incidents only have 5 or 6 updates before being resolved,
-   * so 50 should be way more than enough.
    */
-  public emitted = new FixedLengthQueue<IncidentUpdates>(50);
+  public emitted = new Cache<IncidentUpdates>(50);
 
   /** The current status page status */
   public curr?: AllIncidents;
   /** The previous status page status */
   public prev?: AllIncidents;
+
+  public active = false;
 
   /** Timer for automatic update checks */
   private timer?: NodeJS.Timeout;
@@ -86,6 +78,8 @@ export class StatuspageUpdates extends EventEmitter {
 
   /** Start checking for updates */
   async start(): Promise<void> {
+    this.active = true;
+
     super.emit('start', {
       time: new Date(),
       state: StatuspageUpdatesState.Started,
@@ -113,6 +107,9 @@ export class StatuspageUpdates extends EventEmitter {
   stop(): boolean {
     if (this.timer) {
       clearInterval(this.timer);
+
+      this.active = false;
+
       super.emit('stop', {
         time: new Date(),
         state: StatuspageUpdatesState.Stopped,

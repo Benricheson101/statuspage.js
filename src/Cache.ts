@@ -1,15 +1,16 @@
 /* eslint-disable no-cond-assign */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+// TODO: add, get methods
+
 /**
- * Class representing a fifo queue with a fixed length
+ * Class representing a lru cache with a fixed length
  *
  * Once it reaches capacity, elements at the front of the
  * array are dropped to make room for new elements.
- * @noInheritDoc
  */
-export class FixedLengthQueue<T> extends Array<T> {
-  constructor(private maxLength: number) {
+export class Cache<T> extends Array<T> {
+  constructor(private size: number) {
     super();
 
     // throw an error if you try to access or set a value
@@ -17,7 +18,7 @@ export class FixedLengthQueue<T> extends Array<T> {
     return new Proxy(this, {
       get(target, prop) {
         let num;
-        if ((num = Number(prop)) && num >= target.maxLength) {
+        if ((num = Number(prop)) && num >= target.size) {
           throw new RangeError('Value exceeds maximum queue length');
         }
 
@@ -26,7 +27,7 @@ export class FixedLengthQueue<T> extends Array<T> {
 
       set(target, prop, value): boolean {
         let num;
-        if ((num = Number(prop)) && num >= target.maxLength) {
+        if ((num = Number(prop)) && num >= target.size) {
           throw new RangeError('Value exceeds maximum queue length');
         }
 
@@ -43,7 +44,7 @@ export class FixedLengthQueue<T> extends Array<T> {
    */
   push(...args: T[]): number {
     for (const arg of args) {
-      if (this.length >= this.maxLength) {
+      if (this.length >= this.size) {
         this.shift();
       }
 
