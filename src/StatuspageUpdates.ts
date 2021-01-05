@@ -25,6 +25,7 @@ export class StatuspageUpdates extends EventEmitter {
   /** The previous status page status */
   public prev?: AllIncidents;
 
+  /** Whether or not it is actively checking for updates */
   public active = false;
 
   /** Timer for automatic update checks */
