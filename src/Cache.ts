@@ -4,7 +4,7 @@
 // TODO: add, get methods
 
 /**
- * Class representing a lru cache with a fixed length
+ * LRU Cache
  *
  * Once it reaches capacity, elements at the front of the
  * array are dropped to make room for new elements.
@@ -19,7 +19,7 @@ export class Cache<T> extends Array<T> {
       get(target, prop) {
         let num;
         if ((num = Number(prop)) && num >= target.size) {
-          throw new RangeError('Value exceeds maximum queue length');
+          throw new RangeError('Value exceeds maximum cache size');
         }
 
         return target[prop as any];
@@ -28,7 +28,7 @@ export class Cache<T> extends Array<T> {
       set(target, prop, value): boolean {
         let num;
         if ((num = Number(prop)) && num >= target.size) {
-          throw new RangeError('Value exceeds maximum queue length');
+          throw new RangeError('Value exceeds maximum cache size');
         }
 
         return (target[prop as any] = value);
@@ -37,10 +37,10 @@ export class Cache<T> extends Array<T> {
   }
 
   /**
-   * Add to the queue. If the new length exceeds the max length,
+   * Add to the cache. If the new length exceeds the max length,
    * old items are removed.
-   * @param args Args to add to the queue
-   * @return New queue length
+   * @param args Args to add to the cache
+   * @return New cache length
    */
   push(...args: T[]): number {
     for (const arg of args) {
@@ -54,25 +54,7 @@ export class Cache<T> extends Array<T> {
     return this.length;
   }
 
-  /**
-   * Add an item to the queue
-   * @param item The item to enqueue
-   */
-  enqueue(item: T) {
-    return this.push(item);
-  }
-
-  /** Remove the item at the beginning of the queue */
-  dequeue(): T | undefined {
-    return this.shift();
-  }
-
-  /** Get the item at the beginning of the queue without removing it */
-  peek(): T | undefined {
-    return this[0];
-  }
-
-  /** Turn the queue into an array */
+  /** Turn the cache into an array */
   toArray(): Array<T> {
     return [...this];
   }
