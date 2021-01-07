@@ -9,7 +9,7 @@ import {Cache} from './Cache';
  */
 export class StatuspageUpdates extends EventEmitter {
   /** Handles all of the API requests that will be made */
-  private s: Statuspage;
+  public statuspage: Statuspage;
 
   /**
    * A representation of the last 50 *updates* that have been emitted.
@@ -34,7 +34,7 @@ export class StatuspageUpdates extends EventEmitter {
   constructor(public id: string, public interval = 30_000) {
     super();
 
-    this.s = new Statuspage(id);
+    this.statuspage = new Statuspage(id);
 
     this.fetch();
   }
@@ -128,7 +128,7 @@ export class StatuspageUpdates extends EventEmitter {
    */
   async fetch(): Promise<AllIncidents | undefined> {
     this.prev = this.curr;
-    this.curr = await this.s.allIncidents();
+    this.curr = await this.statuspage.allIncidents();
 
     return this.prev;
   }
